@@ -1,0 +1,52 @@
+# Dependencies
+/node_modules
+/.pnp
+.pyc
+__pycache__
+.env
+.venv
+env.py
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Production files
+/build
+/dist
+/.next
+/out
+
+# Misc
+.DS_Thumbs.db
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS
+.DS_Store
+ehthumbs.db
+Desktop.ini
+
+# Secrets
+*.env
+.env.*
+!.env.example
+
+# Docker
+docker-compose.override.yml
+
+# Vite
+/.vite
