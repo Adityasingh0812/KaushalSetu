@@ -5,28 +5,28 @@ export const Sidebar = () => {
         <span className="text-xl font-semibold text-navy-800">Menu</span>
       </div>
       <nav className="mt-10 space-y-2">
-        <a href="#" className="flex items-center px-4 py-2 text-navy-600 hover:bg-navy-50 hover:text-navy-800">
+        <a href="/dashboard" className="flex items-center px-4 py-2 text-navy-600 hover:bg-navy-50 hover:text-navy-800">
           Dashboard
         </a>
-        <a href="#" className="flex items-center px-4 py-2 text-navy-600 hover:bg-navy-50 hover:text-navy-800">
+        <a href="/candidates" className="flex items-center px-4 py-2 text-navy-600 hover:bg-navy-50 hover:text-navy-800">
           Candidates
         </a>
-        <a href="#" className="flex items-center px-4 py-2 text-navy-600 hover:bg-navy-50 hover:text-navy-800">
+        <a href="/training" className="flex items-center px-4 py-2 text-navy-600 hover:bg-navy-50 hover:text-navy-800">
           Training
         </a>
-        <a href="#" className="flex items-center px-4 py-2 text-navy-600 hover:bg-navy-50 hover:text-navy-800">
+        <a href="/employment" className="flex items-center px-4 py-2 text-navy-600 hover:bg-navy-50 hover:text-navy-800">
           Employment
         </a>
-        <a href="#" className="flex items-center px-4 py-2 text-navy-600 hover:bg-navy-50 hover:text-navy-800">
+        <a href="/followups" className="flex items-center px-4 py-2 text-navy-600 hover:bg-navy-50 hover:text-navy-800">
           Follow-ups
         </a>
-        <a href="#" className="flex items-center px-4 py-2 text-navy-600 hover:bg-navy-50 hover:text-navy-800">
+        <a href="/interventions" className="flex items-center px-4 py-2 text-navy-600 hover:bg-navy-50 hover:text-navy-800">
           Interventions
         </a>
-        <a href="#" className="flex items-center px-4 py-2 text-navy-600 hover:bg-navy-50 hover:text-navy-800">
+        <a href="/jobs" className="flex items-center px-4 py-2 text-navy-600 hover:bg-navy-50 hover:text-navy-800">
           Jobs
         </a>
-        <a href="#" className="flex items-center px-4 py-2 text-navy-600 hover:bg-navy-50 hover:text-navy-800">
+        <a href="/employers" className="flex items-center px-4 py-2 text-navy-600 hover:bg-navy-50 hover:text-navy-800">
           Employers
         </a>
       </nav>
