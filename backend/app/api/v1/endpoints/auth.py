@@ -2,7 +2,7 @@ from datetime import timedelta
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import HTTPBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 from app.db.session import SessionLocal
@@ -16,7 +16,7 @@ from app.core.security import (
     get_current_gov_admin,
     get_current_institute_officer,
     get_current_trainee,
-    get_current_employer,
+    get_current_employer
 )
 from app.models.user import User, UserRole
 from app.core.config import settings

@@ -13,8 +13,10 @@ from app.api.v1.router import api_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: create tables if not exist (for demo)
-    Base.metadata.create_all(bind=engine)
+    # Only create tables if explicitly opted in for local development/demo.
+    # By default, AUTO_CREATE_TABLES is False to protect persistent database schemas.
+    if settings.AUTO_CREATE_TABLES:
+        Base.metadata.create_all(bind=engine)
     yield
     # Shutdown: nothing for now
     pass

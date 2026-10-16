@@ -2,6 +2,7 @@ import { LanguageToggle } from "../ui/LanguageToggle";
 import { UserProfile } from "../ui/UserProfile";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 export const Header = () => {
   const { user, logout } = useAuth();
@@ -18,10 +19,50 @@ export const Header = () => {
         <div className="flex items-center space-x-4">
           <h1 className="text-xl font-bold text-navy-800">KaushalSetu</h1>
           <nav className="hidden md:flex space-x-4">
-            <a href="#" className="text-navy-600 hover:text-navy-800">Dashboard</a>
-            <a href="#" className="text-navy-600 hover:text-navy-800">Candidates</a>
-            <a href="#" className="text-navy-600 hover:text-navy-800">Analytics</a>
-            <a href="#" className="text-navy-600 hover:text-navy-800">Reports</a>
+            <NavLink
+              to="/dashboard"
+              end
+              className={({ isActive }) =>
+                isActive
+                  ? "text-navy-800 font-medium"
+                  : "text-navy-600 hover:text-navy-800"
+              }
+            >
+              Dashboard
+            </NavLink>
+            <NavLink
+              to="/candidates"
+              end
+              className={({ isActive }) =>
+                isActive
+                  ? "text-navy-800 font-medium"
+                  : "text-navy-600 hover:text-navy-800"
+              }
+            >
+              Candidates
+            </NavLink>
+            <NavLink
+              to="/analytics"
+              end
+              className={({ isActive }) =>
+                isActive
+                  ? "text-navy-800 font-medium"
+                  : "text-navy-600 hover:text-navy-800"
+              }
+            >
+              Analytics
+            </NavLink>
+            <NavLink
+              to="/reports"
+              end
+              className={({ isActive }) =>
+                isActive
+                  ? "text-navy-800 font-medium"
+                  : "text-navy-600 hover:text-navy-800"
+              }
+            >
+              Reports
+            </NavLink>
           </nav>
         </div>
         <div className="flex items-center space-x-3">

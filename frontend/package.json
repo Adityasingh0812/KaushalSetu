@@ -14,11 +14,13 @@
     "react-router-dom": "^6.4.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "@types/react-router-dom": "*",
     "@vitejs/plugin-react": "^2.0.0",
     "autoprefixer": "^10.4.13",
+    "playwright": "^1.64.1",
     "postcss": "^8.4.21",
     "tailwindcss": "^3.2.7",
     "typescript": "^4.9.3",

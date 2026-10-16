@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     POSTGRES_DB: str = Field(default="kaushalsetu", env="POSTGRES_DB")
     POSTGRES_PORT: str = Field(default="5432", env="POSTGRES_PORT")
     DATABASE_URL: Union[str, None] = None
+    AUTO_CREATE_TABLES: bool = Field(default=False, env="AUTO_CREATE_TABLES")
 
     @property
     def database_url(self) -> str:
