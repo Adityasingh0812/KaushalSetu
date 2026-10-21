@@ -13,6 +13,7 @@ interface AuthContextType {
   } | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  register: (email: string, fullName: string, phone: string | null, password: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -53,6 +54,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const register = async (email: string, fullName: string, phone: string | null, password: string) => {
+    setLoading(true);
+    try {
+      await authApi.register(email, fullName, phone, password);
+      // Registration successful but does not auto-login (backend doesn't return tokens)
+      // We don't set user here; user must log in separately
+    } catch (err) {
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
     authApi.logout();
     setUser(null);
@@ -62,6 +76,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     user,
     loading,
     login,
+    register,
     logout,
   };
 

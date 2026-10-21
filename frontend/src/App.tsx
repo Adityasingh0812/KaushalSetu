@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "./components/layout/Layout";
 import { Dashboard } from "./pages/Dashboard";
 import { Login } from "./pages/Login";
+import { Register } from "./pages/Register";
 import { PrivateRoute } from "./components/auth/PrivateRoute";
 import { Profile } from "./pages/Profile";
 import { Candidates } from "./pages/Candidates";
@@ -19,8 +20,7 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<Login />} />
-          {/* Optional: register route placeholder */}
-          <Route path="/register" element={<div>Register page coming soon</div>} />
+          <Route path="/register" element={<Register />} />
 
           {/* Protected routes rendered inside shared Layout */}
           <Route

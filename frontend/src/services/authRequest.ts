@@ -92,6 +92,23 @@ export const authApi = {
     return data;
   },
 
+  register: async (email: string, fullName: string, phone: string | null, password: string) => {
+    const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, full_name: fullName, phone, password }),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || `Registration failed: ${response.status}`);
+    }
+    const data = (await response.json()) as UserResponse;
+    // Registration does not return tokens; user must log in separately
+    return data;
+  },
+
   refresh: async () => {
     const refreshToken = getRefreshToken();
     if (!refreshToken) {
