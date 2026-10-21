@@ -30,7 +30,12 @@ class Settings(BaseSettings):
         return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
     # CORS
-    BACKEND_CORS_ORIGINS: List[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
+    # Accept comma-separated origins via env (e.g., "https://prod.example.com,https://staging.example.com")
+    # Defaults to local Vite dev server origins for development.
+    BACKEND_CORS_ORIGINS: List[str] = Field(
+        default=["http://localhost:5173", "http://127.0.0.1:5173"],
+        env="BACKEND_CORS_ORIGINS",
+    )
 
     # Demo accounts (for seeding)
     DEMO_ACCOUNTS: List[dict] = [
