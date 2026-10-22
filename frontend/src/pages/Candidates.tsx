@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { authenticatedFetch } from "../services/authRequest";
 import { useAuth } from "../contexts/AuthContext";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export interface CandidateListItem {
   id: number;
@@ -27,6 +28,7 @@ export interface PaginatedCandidatesResponse {
 
 export const Candidates: React.FC = () => {
   const { user } = useAuth();
+  const { t } = useLanguage();
 
   // Filter & pagination states
   const [search, setSearch] = useState("");
@@ -69,14 +71,14 @@ export const Candidates: React.FC = () => {
       setData(response);
     } catch (err: any) {
       if (err.message && err.message.includes("403")) {
-        setError("Access restricted. Only government administrators and institute officers are authorized to view candidate records.");
+        setError(t("candidates.access_restricted"));
       } else {
         setError(err.message || "Failed to load candidates directory. Please try again.");
       }
     } finally {
       setLoading(false);
     }
-  }, [queryState]);
+  }, [queryState, t]);
 
   useEffect(() => {
     fetchCandidates();
@@ -125,16 +127,16 @@ export const Candidates: React.FC = () => {
       {/* Header and Title */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-navy-800">Candidates Directory</h1>
+          <h1 className="text-2xl font-bold text-navy-800">{t("candidates.title")}</h1>
           <p className="text-sm text-navy-600 mt-1">
-            Browse and manage registered candidates, training profiles, and skill credentials.
+            {t("candidates.subtitle")}
           </p>
         </div>
 
         {/* Demonstration Indicator Badge */}
         <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-50 border border-amber-200 text-amber-800 rounded-md text-xs font-medium self-start md:self-auto">
           <span className="text-sm">⚠️</span>
-          <span>Synthetic Demonstration Data</span>
+          <span>{t("training.synthetic_data_badge")}</span>
         </div>
       </div>
 
@@ -143,42 +145,42 @@ export const Candidates: React.FC = () => {
         <form onSubmit={handleFilterSubmit} className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <label htmlFor="search" className="block text-xs font-semibold text-navy-700 uppercase tracking-wider mb-1">
-              Search Candidate
+              {t("label.search")}
             </label>
             <input
               id="search"
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Name or email..."
+              placeholder={t("candidates.search_placeholder")}
               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-500"
             />
           </div>
 
           <div>
             <label htmlFor="skillFilter" className="block text-xs font-semibold text-navy-700 uppercase tracking-wider mb-1">
-              Skill
+              {t("label.skill")}
             </label>
             <input
               id="skillFilter"
               type="text"
               value={skillFilter}
               onChange={(e) => setSkillFilter(e.target.value)}
-              placeholder="e.g. Python, Electrician..."
+              placeholder={t("candidates.skill_placeholder")}
               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-500"
             />
           </div>
 
           <div>
             <label htmlFor="locationFilter" className="block text-xs font-semibold text-navy-700 uppercase tracking-wider mb-1">
-              Location
+              {t("label.location")}
             </label>
             <input
               id="locationFilter"
               type="text"
               value={locationFilter}
               onChange={(e) => setLocationFilter(e.target.value)}
-              placeholder="e.g. Jaipur, Delhi..."
+              placeholder={t("candidates.location_placeholder")}
               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-500"
             />
           </div>
@@ -188,14 +190,14 @@ export const Candidates: React.FC = () => {
               type="submit"
               className="flex-1 px-4 py-2 bg-navy-600 text-white text-sm font-medium rounded-md hover:bg-navy-700 transition-colors focus:outline-none focus:ring-2 focus:ring-navy-500"
             >
-              Filter
+              {t("button.filter")}
             </button>
             <button
               type="button"
               onClick={handleClearFilters}
               className="px-3 py-2 bg-gray-100 text-navy-700 text-sm font-medium rounded-md hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
             >
-              Reset
+              {t("button.reset")}
             </button>
           </div>
         </form>
@@ -212,7 +214,7 @@ export const Candidates: React.FC = () => {
             onClick={() => fetchCandidates()}
             className="text-xs font-semibold text-red-700 hover:text-red-900 underline ml-4"
           >
-            Retry
+            {t("button.retry")}
           </button>
         </div>
       )}
@@ -222,16 +224,16 @@ export const Candidates: React.FC = () => {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-16 text-navy-600 space-y-3">
             <div className="w-8 h-8 border-4 border-navy-200 border-t-navy-600 rounded-full animate-spin" />
-            <p className="text-sm">Loading candidates directory...</p>
+            <p className="text-sm">{t("candidates.loading")}</p>
           </div>
         ) : !data || data.items.length === 0 ? (
           <div className="text-center py-16 px-4">
             <span className="text-4xl">👥</span>
-            <h3 className="mt-2 text-base font-medium text-navy-800">No candidates found</h3>
+            <h3 className="mt-2 text-base font-medium text-navy-800">{t("candidates.no_results")}</h3>
             <p className="mt-1 text-sm text-navy-500">
               {queryState.search || queryState.skills || queryState.location
-                ? "No candidate matches the current filter criteria. Try adjusting or clearing your filters."
-                : "No candidate records are currently available."}
+                ? t("candidates.no_results_filter")
+                : t("candidates.no_results_empty")}
             </p>
             {(queryState.search || queryState.skills || queryState.location) && (
               <div className="mt-4">
@@ -239,7 +241,7 @@ export const Candidates: React.FC = () => {
                   onClick={handleClearFilters}
                   className="px-4 py-2 text-xs font-medium text-navy-600 bg-navy-50 hover:bg-navy-100 rounded-md border border-navy-200 transition-colors"
                 >
-                  Clear All Filters
+                  {t("button.clear")}
                 </button>
               </div>
             )}
@@ -250,22 +252,22 @@ export const Candidates: React.FC = () => {
               <thead className="bg-gray-50">
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-navy-700 uppercase tracking-wider">
-                    Candidate
+                    {t("candidates.candidate")}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-navy-700 uppercase tracking-wider">
-                    Contact
+                    {t("candidates.contact")}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-navy-700 uppercase tracking-wider">
-                    Institute
+                    {t("candidates.institute")}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-navy-700 uppercase tracking-wider">
-                    Skills
+                    {t("candidates.skills")}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-navy-700 uppercase tracking-wider">
-                    Location
+                    {t("candidates.preferred_location")}
                   </th>
                   <th scope="col" className="px-6 py-3 text-right text-xs font-semibold text-navy-700 uppercase tracking-wider">
-                    Action
+                    {t("training.action")}
                   </th>
                 </tr>
               </thead>
@@ -291,7 +293,7 @@ export const Candidates: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-navy-800">
-                        {candidate.institute_name || "Unassigned"}
+                        {candidate.institute_name || t("training.unassigned")}
                       </div>
                       {candidate.institute_id && (
                         <div className="text-xs text-navy-500">ID: #{candidate.institute_id}</div>
@@ -315,7 +317,7 @@ export const Candidates: React.FC = () => {
                           )}
                         </div>
                       ) : (
-                        <span className="text-xs text-gray-400 italic">None listed</span>
+                        <span className="text-xs text-gray-400 italic">{t("candidates.none_listed")}</span>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-navy-700">
@@ -326,7 +328,7 @@ export const Candidates: React.FC = () => {
                         to={`/candidates/${candidate.id}`}
                         className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-navy-600 bg-navy-50 hover:bg-navy-100 hover:text-navy-900 transition-colors"
                       >
-                        View Profile →
+                        {t("button.view_profile")}
                       </Link>
                     </td>
                   </tr>
@@ -341,13 +343,15 @@ export const Candidates: React.FC = () => {
           <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <span className="text-xs text-navy-600">
-                Showing <span className="font-semibold">{((data.page - 1) * data.page_size) + 1}</span> to{" "}
-                <span className="font-semibold">{Math.min(data.page * data.page_size, data.total)}</span> of{" "}
-                <span className="font-semibold">{data.total}</span> candidates
+                {t("candidates.showing", {
+                  start: ((data.page - 1) * data.page_size) + 1,
+                  end: Math.min(data.page * data.page_size, data.total),
+                  total: data.total,
+                })}
               </span>
 
               <div className="flex items-center gap-1.5 text-xs text-navy-600">
-                <label htmlFor="pageSize">Per page:</label>
+                <label htmlFor="pageSize">{t("label.per_page")}</label>
                 <select
                   id="pageSize"
                   value={queryState.pageSize}
@@ -368,17 +372,17 @@ export const Candidates: React.FC = () => {
                 disabled={data.page <= 1}
                 className="px-3 py-1.5 text-xs font-medium text-navy-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                Previous
+                {t("button.previous")}
               </button>
               <span className="text-xs text-navy-700 px-2">
-                Page {data.page} of {data.total_pages}
+                {t("label.page", { current: data.page, total: data.total_pages })}
               </span>
               <button
                 onClick={() => handlePageChange(data.page + 1)}
                 disabled={data.page >= data.total_pages}
                 className="px-3 py-1.5 text-xs font-medium text-navy-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                Next
+                {t("button.next")}
               </button>
             </div>
           </div>

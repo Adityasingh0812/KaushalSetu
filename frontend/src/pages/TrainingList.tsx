@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { authenticatedFetch } from "../services/authRequest";
 import { useAuth } from "../contexts/AuthContext";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export interface TrainingProgrammeListItem {
   id: number;
@@ -27,6 +28,7 @@ export interface PaginatedTrainingProgrammesResponse {
 
 export const TrainingList: React.FC = () => {
   const { user } = useAuth();
+  const { t } = useLanguage();
 
   // Filter & pagination states
   const [search, setSearch] = useState("");
@@ -117,10 +119,10 @@ export const TrainingList: React.FC = () => {
 
   // Status label mapping for display
   const statusLabels: Record<string, string> = {
-    draft: "Draft",
-    active: "Active",
-    completed: "Completed",
-    cancelled: "Cancelled",
+    draft: t("training.status.draft"),
+    active: t("training.status.active"),
+    completed: t("training.status.completed"),
+    cancelled: t("training.status.cancelled"),
   };
 
   // Status badge colors
@@ -136,9 +138,9 @@ export const TrainingList: React.FC = () => {
       {/* Header and Title */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex-1 min-w-0">
-          <h1 className="text-2xl font-bold text-navy-800">Training Programmes</h1>
+          <h1 className="text-2xl font-bold text-navy-800">{t("training.title")}</h1>
           <p className="text-sm text-navy-600 mt-1">
-            Browse and manage training programmes offered by institutes.
+            {t("training.subtitle")}
           </p>
         </div>
 
@@ -148,7 +150,7 @@ export const TrainingList: React.FC = () => {
             to="/training/create" // We'll need to create this route later, but for now we can point to a placeholder
             className="px-4 py-2 bg-navy-600 text-white text-sm font-medium rounded-md hover:bg-navy-700 transition-colors focus:outline-none focus:ring-2 focus:ring-navy-500"
           >
-            Create Programme
+            {t("button.create")}
           </Link>
         )}
       </div>
@@ -158,28 +160,28 @@ export const TrainingList: React.FC = () => {
         <form onSubmit={handleFilterSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label htmlFor="search" className="block text-xs font-semibold text-navy-700 uppercase tracking-wider mb-1">
-              Search Programme
+              {t("label.search")}
             </label>
             <input
               id="search"
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Programme name or provider..."
+              placeholder={t("training.search_placeholder")}
               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-500"
             />
           </div>
 
           <div>
             <label htmlFor="skillFilter" className="block text-xs font-semibold text-navy-700 uppercase tracking-wider mb-1">
-              Skill/Course Area
+              {t("label.skill")}
             </label>
             <input
               id="skillFilter"
               type="text"
               value={skillFilter}
               onChange={(e) => setSkillFilter(e.target.value)}
-              placeholder="e.g. Python, Electrical Work..."
+              placeholder={t("training.skill_placeholder")}
               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-500"
             />
           </div>
@@ -189,14 +191,14 @@ export const TrainingList: React.FC = () => {
               type="submit"
               className="flex-1 px-4 py-2 bg-navy-600 text-white text-sm font-medium rounded-md hover:bg-navy-700 transition-colors focus:outline-none focus:ring-2 focus:ring-navy-500"
             >
-              Filter
+              {t("button.filter")}
             </button>
             <button
               type="button"
               onClick={handleClearFilters}
               className="px-3 py-2 bg-gray-100 text-navy-700 text-sm font-medium rounded-md hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
             >
-              Reset
+              {t("button.reset")}
             </button>
           </div>
         </form>
@@ -213,7 +215,7 @@ export const TrainingList: React.FC = () => {
             onClick={() => fetchTrainingProgrammes()}
             className="text-xs font-semibold text-red-700 hover:text-red-900 underline ml-4"
           >
-            Retry
+            {t("button.retry")}
           </button>
         </div>
       )}
@@ -223,16 +225,16 @@ export const TrainingList: React.FC = () => {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-16 text-navy-600 space-y-3">
             <div className="w-8 h-8 border-4 border-navy-200 border-t-navy-600 rounded-full animate-spin" />
-            <p className="text-sm">Loading training programmes...</p>
+            <p className="text-sm">{t("training.loading")}</p>
           </div>
         ) : !data || data.items.length === 0 ? (
           <div className="text-center py-16 px-4">
             <span className="text-4xl">🎓</span>
-            <h3 className="mt-2 text-base font-medium text-navy-800">No training programmes found</h3>
+            <h3 className="mt-2 text-base font-medium text-navy-800">{t("training.no_results")}</h3>
             <p className="mt-1 text-sm text-navy-500">
               {queryState.search || queryState.skill
-                ? "No training programme matches the current filter criteria. Try adjusting or clearing your filters."
-                : "No training programme records are currently available."}
+                ? t("training.no_results_filter")
+                : t("training.no_results_empty")}
             </p>
             {(queryState.search || queryState.skill) && (
               <div className="mt-4">
@@ -240,7 +242,7 @@ export const TrainingList: React.FC = () => {
                   onClick={handleClearFilters}
                   className="px-4 py-2 text-xs font-medium text-navy-600 bg-navy-50 hover:bg-navy-100 rounded-md border border-navy-200 transition-colors"
                 >
-                  Clear All Filters
+                  {t("button.clear")}
                 </button>
               </div>
             )}
@@ -251,28 +253,25 @@ export const TrainingList: React.FC = () => {
               <thead className="bg-gray-50">
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-navy-700 uppercase tracking-wider">
-                    Programme
+                    {t("training.provider")}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-navy-700 uppercase tracking-wider">
-                    Provider
+                    {t("training.skill_course")}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-navy-700 uppercase tracking-wider">
-                    Skill/Course
+                    {t("training.location")}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-navy-700 uppercase tracking-wider">
-                    Location
+                    {t("training.dates")}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-navy-700 uppercase tracking-wider">
-                    Dates
+                    {t("training.status")}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-navy-700 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-navy-700 uppercase tracking-wider">
-                    Institute
+                    {t("training.institute")}
                   </th>
                   <th scope="col" className="px-6 py-3 text-right text-xs font-semibold text-navy-700 uppercase tracking-wider">
-                    Action
+                    {t("training.action")}
                   </th>
                 </tr>
               </thead>
@@ -287,24 +286,24 @@ export const TrainingList: React.FC = () => {
                         <div className="ml-3">
                           <div className="text-sm font-semibold text-navy-900">{programme.name}</div>
                           <div className="text-xs text-navy-500">
-                            {programme.course_or_skill_area || "Skill not specified"}
+                            {programme.course_or_skill_area || t("training.not_specified")}
                           </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-navy-800">
-                        {programme.training_provider || "Not specified"}
+                        {programme.training_provider || t("training.not_specified")}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-navy-800">
-                        {programme.course_or_skill_area || "Not specified"}
+                        {programme.course_or_skill_area || t("training.not_specified")}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-navy-800">
-                        {programme.location || "Not specified"}
+                        {programme.location || t("training.not_specified")}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-navy-700">
@@ -326,7 +325,7 @@ export const TrainingList: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-navy-800">
-                        {programme.institute_name || "Unassigned"}
+                        {programme.institute_name || t("training.unassigned")}
                       </div>
                       {programme.institute_id && (
                         <div className="text-xs text-navy-500">ID: #{programme.institute_id}</div>
@@ -337,7 +336,7 @@ export const TrainingList: React.FC = () => {
                         to={`/training/${programme.id}`}
                         className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-navy-600 bg-navy-50 hover:bg-navy-100 hover:text-navy-900 transition-colors"
                       >
-                        View Details →
+                        {t("button.view")}
                       </Link>
                     </td>
                   </tr>
@@ -352,13 +351,15 @@ export const TrainingList: React.FC = () => {
           <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <span className="text-xs text-navy-600">
-                Showing <span className="font-semibold">{((data.page - 1) * data.page_size) + 1}</span> to{" "}
-                <span className="font-semibold">{Math.min(data.page * data.page_size, data.total)}</span> of{" "}
-                <span className="font-semibold">{data.total}</span> training programmes
+                {t("training.showing", {
+                  start: ((data.page - 1) * data.page_size) + 1,
+                  end: Math.min(data.page * data.page_size, data.total),
+                  total: data.total,
+                })}
               </span>
 
               <div className="flex items-center gap-1.5 text-xs text-navy-600">
-                <label htmlFor="pageSize">Per page:</label>
+                <label htmlFor="pageSize">{t("label.per_page")}</label>
                 <select
                   id="pageSize"
                   value={queryState.pageSize}
@@ -379,17 +380,17 @@ export const TrainingList: React.FC = () => {
                 disabled={data.page <= 1}
                 className="px-3 py-1.5 text-xs font-medium text-navy-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                Previous
+                {t("button.previous")}
               </button>
               <span className="text-xs text-navy-700 px-2">
-                Page {data.page} of {data.total_pages}
+                {t("label.page", { current: data.page, total: data.total_pages })}
               </span>
               <button
                 onClick={() => handlePageChange(data.page + 1)}
                 disabled={data.page >= data.total_pages}
                 className="px-3 py-1.5 text-xs font-medium text-navy-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                Next
+                {t("button.next")}
               </button>
             </div>
           </div>

@@ -13,12 +13,14 @@ import { TrainingList } from "./pages/TrainingList";
 import { TrainingDetail } from "./pages/TrainingDetail";
 import { TrainingForm } from "./pages/TrainingForm";
 import { AuthProvider } from "./contexts/AuthContext";
+import { LanguageProvider } from "./contexts/LanguageContext";
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
+        <LanguageProvider>
+          <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
@@ -53,6 +55,7 @@ function App() {
             {/* Add more protected routes as needed */}
           </Route>
         </Routes>
+        </LanguageProvider>
       </AuthProvider>
     </BrowserRouter>
   );

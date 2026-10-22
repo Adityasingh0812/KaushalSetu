@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export const Login = () => {
   const [email, setEmail] = useState("");
@@ -9,6 +10,7 @@ export const Login = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,16 +35,16 @@ export const Login = () => {
       <div className="w-full max-w-md space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-bold text-navy-800">
-            Sign in to KaushalSetu
+            {t("auth.sign_in")}
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Use your institute account to access the system
+            {t("auth.use_account")}
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div>
             <label htmlFor="email" className="sr-only">
-              Email
+              {t("auth.email")}
             </label>
             <div className="relative rounded-md shadow-sm">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -59,14 +61,14 @@ export const Login = () => {
                 autoFocus
                 required
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md bg-white placeholder-gray-400 focus:outline-none focus:ring-navy-500 focus:border-navy-500 sm:text-sm"
-                placeholder="Email address"
+                placeholder={t("auth.email")}
               />
             </div>
           </div>
 
           <div>
             <label htmlFor="password" className="sr-only">
-              Password
+              {t("auth.password")}
             </label>
             <div className="relative rounded-md shadow-sm">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -83,7 +85,7 @@ export const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md bg-white placeholder-gray-400 focus:outline-none focus:ring-navy-500 focus:border-navy-500 sm:text-sm"
-                placeholder="Password"
+                placeholder={t("auth.password")}
               />
             </div>
           </div>
@@ -102,7 +104,7 @@ export const Login = () => {
                 className="h-4 w-4 text-navy-600 focus:ring-navy-500 border-gray-300 rounded"
               />
               <label htmlFor="remember-me" className="ml-2 block text-sm text-navy-700">
-                Remember me
+                {t("auth.remember_me")}
               </label>
             </div>
 
@@ -111,7 +113,7 @@ export const Login = () => {
                 href="/forgot-password"
                 className="font-medium text-navy-600 hover:text-navy-800"
               >
-                Forgot password?
+                {t("auth.forgot_password")}
               </a>
             </div>
           </div>
@@ -122,18 +124,18 @@ export const Login = () => {
               disabled={loading}
               className="group w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md shadow-sm bg-navy-600 text-white hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-navy-500"
             >
-              {loading ? "Signing in..." : "Sign in"}
+              {loading ? t("auth.signing_in") : t("button.login")}
             </button>
           </div>
         </form>
 
         <p className="mt-6 text-center text-sm text-gray-500">
-          Don't have an account?{' '}
+          {t("auth.no_account")}
           <Link
             to="/register"
             className="font-medium text-navy-600 hover:text-navy-800"
           >
-            Sign up
+            {t("button.register")}
           </Link>
         </p>
       </div>

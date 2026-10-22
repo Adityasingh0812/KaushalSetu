@@ -2,10 +2,12 @@ import { Card } from "../components/ui/Card";
 import { Stat } from "../components/ui/Stat";
 import { authenticatedFetch } from "../services/authRequest";
 import { useAuth } from "../contexts/AuthContext";
+import { useLanguage } from "../contexts/LanguageContext";
 import { useEffect, useState } from "react";
 
 export const Dashboard = () => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [total, setTotal] = useState<number | null>(null);
   const [totalLoading, setTotalLoading] = useState<boolean>(true);
   const [totalError, setTotalError] = useState<string | null>(null);
@@ -33,11 +35,11 @@ export const Dashboard = () => {
           }
         } catch (err: any) {
           if (cancelled) return;
-          let message = "Failed to load data";
+          let message = t("dashboard.error");
           if (err.message?.includes("401")) {
-            message = "Unauthorized";
+            message = t("dashboard.unauthorized");
           } else if (err.message?.includes("403")) {
-            message = "Access restricted";
+            message = t("dashboard.access_restricted");
           } else {
             message = err.message || "Unknown error";
           }
@@ -50,7 +52,7 @@ export const Dashboard = () => {
         // trainee and employer: no access to candidates endpoint for total count
         if (!cancelled) {
           setTotalLoading(false);
-          setTotalError("Access restricted");
+          setTotalError(t("dashboard.access_restricted"));
         }
       }
     };
@@ -58,30 +60,30 @@ export const Dashboard = () => {
     return () => {
       cancelled = true;
     };
-  }, [user]);
+  }, [user, t]);
 
   const stats = [
     {
-      label: "Total Candidates",
+      label: t("dashboard.total_candidates"),
       value: totalLoading
-        ? "Loading…"
+        ? t("dashboard.loading")
         : totalError
         ? totalError
         : total !== null
         ? String(total)
-        : "Data not available",
+        : t("dashboard.data_not_available"),
       change: "",
       icon: "users",
       color: "navy",
     },
-    { label: "Verified Employment", value: "Data not available", change: "", icon: "briefcase", color: "teal" },
-    { label: "Active Interventions", value: "Data not available", change: "", icon: "handshake", color: "navy" },
-    { label: "Follow-ups Completed", value: "Data not available", change: "", icon: "phone", color: "teal" },
+    { label: t("dashboard.verified_employment"), value: t("dashboard.data_not_available"), change: "", icon: "briefcase", color: "teal" },
+    { label: t("dashboard.active_interventions"), value: t("dashboard.data_not_available"), change: "", icon: "handshake", color: "navy" },
+    { label: t("dashboard.followups_completed"), value: t("dashboard.data_not_available"), change: "", icon: "phone", color: "teal" },
   ];
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-navy-800">Dashboard Overview</h2>
+      <h2 className="text-2xl font-bold text-navy-800">{t("dashboard.title")}</h2>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
           <Stat key={stat.label} {...stat} />
@@ -89,32 +91,32 @@ export const Dashboard = () => {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card title="Employment Trends" icon="trending-up" color="teal">
+        <Card title={t("dashboard.employment_trends")} icon="trending-up" color="teal">
           <div className="space-y-4">
-            <p className="text-navy-600">This chart shows verified employment trends over time.</p>
+            <p className="text-navy-600">{t("dashboard.employment_trends_desc")}</p>
             <div className="h-24 bg-navy-50 rounded-lg">
               {/* Placeholder for chart - clearly labeled as synthetic data */}
               <div className="flex h-full items-center justify-center text-navy-400">
-                [Employment Trend Chart - Synthetic Data for Demo]
+                {t("dashboard.chart_placeholder")}
               </div>
             </div>
             <p className="text-sm text-navy-500">
-              Note: This chart uses clearly labeled synthetic data for demonstration purposes only.
+              {t("dashboard.chart_note")}
             </p>
           </div>
         </Card>
 
-        <Card title="Intervention Effectiveness" icon="pie-chart" color="navy">
+        <Card title={t("dashboard.intervention_effectiveness")} icon="pie-chart" color="navy">
           <div className="space-y-4">
-            <p className="text-navy-600">This chart shows the effectiveness of different intervention types.</p>
+            <p className="text-navy-600">{t("dashboard.intervention_desc")}</p>
             <div className="h-24 bg-navy-50 rounded-lg">
               {/* Placeholder for chart - clearly labeled as synthetic data */}
               <div className="flex h-full items-center justify-center text-navy-400">
-                [Intervention Effectiveness Chart - Synthetic Data for Demo]
+                {t("dashboard.chart_placeholder")}
               </div>
             </div>
             <p className="text-sm text-navy-500">
-              Note: This chart uses clearly labeled synthetic data for demonstration purposes only.
+              {t("dashboard.chart_note")}
             </p>
           </div>
         </Card>

@@ -3,10 +3,12 @@ import { UserProfile } from "../ui/UserProfile";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 export const Header = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const handleLogout = () => {
     logout();
@@ -17,7 +19,7 @@ export const Header = () => {
     <header className="bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
         <div className="flex items-center space-x-4">
-          <h1 className="text-xl font-bold text-navy-800">KaushalSetu</h1>
+          <h1 className="text-xl font-bold text-navy-800">{t("app.name")}</h1>
           <nav className="hidden md:flex space-x-4">
             <NavLink
               to="/dashboard"
@@ -28,7 +30,7 @@ export const Header = () => {
                   : "text-navy-600 hover:text-navy-800"
               }
             >
-              Dashboard
+              {t("nav.dashboard")}
             </NavLink>
             <NavLink
               to="/candidates"
@@ -39,7 +41,7 @@ export const Header = () => {
                   : "text-navy-600 hover:text-navy-800"
               }
             >
-              Candidates
+              {t("nav.candidates")}
             </NavLink>
             <NavLink
               to="/analytics"
@@ -50,7 +52,7 @@ export const Header = () => {
                   : "text-navy-600 hover:text-navy-800"
               }
             >
-              Analytics
+              {t("nav.analytics")}
             </NavLink>
             <NavLink
               to="/reports"
@@ -61,7 +63,7 @@ export const Header = () => {
                   : "text-navy-600 hover:text-navy-800"
               }
             >
-              Reports
+              {t("nav.reports")}
             </NavLink>
           </nav>
         </div>
@@ -74,7 +76,7 @@ export const Header = () => {
                 onClick={handleLogout}
                 className="ml-2 text-sm font-medium text-navy-600 hover:text-navy-800"
               >
-                Logout
+                {t("button.logout")}
               </button>
             </>
           ) : null}

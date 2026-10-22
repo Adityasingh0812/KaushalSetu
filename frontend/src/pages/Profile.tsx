@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { authenticatedFetch } from "../services/authRequest";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export const Profile = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [candidate, setCandidate] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -69,7 +71,7 @@ export const Profile = () => {
           preferred_location: data.preferred_location || "",
         });
       } catch (err: any) {
-        setError(err.message || "Failed to load profile");
+        setError(err.message || t("profile.load_error"));
       } finally {
         setLoading(false);
       }
@@ -109,9 +111,9 @@ export const Profile = () => {
         body: JSON.stringify(updateData),
       });
       setCandidate(response);
-      setSuccess("Profile updated successfully!");
+      setSuccess(t("profile.update_success"));
     } catch (err: any) {
-      setError(err.message || "Failed to update profile");
+      setError(err.message || t("profile.update_error"));
     } finally {
       setLoading(false);
     }
@@ -120,14 +122,14 @@ export const Profile = () => {
   if (loading && !candidate) {
     return (
       <div className="flex items-center justify-center py-12 text-navy-600">
-        Loading profile...
+        {t("profile.loading")}
       </div>
     );
   }
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <h1 className="text-2xl font-bold text-navy-800">My Profile</h1>
+      <h1 className="text-2xl font-bold text-navy-800">{t("profile.title")}</h1>
       {error && (
         <div className="bg-red-50 border-l-4 border-red-400 text-red-700 p-4 rounded-r-md">
           <p>{error}</p>
@@ -141,7 +143,7 @@ export const Profile = () => {
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 space-y-6">
         <div>
           <label className="block text-sm font-medium text-navy-700 mb-2">
-            Date of Birth
+            {t("profile.date_of_birth")}
           </label>
           <input
             type="date"
@@ -153,53 +155,53 @@ export const Profile = () => {
         </div>
         <div>
           <label className="block text-sm font-medium text-navy-700 mb-2">
-            Gender
+            {t("profile.gender")}
           </label>
           <input
             type="text"
             name="gender"
             value={formData.gender}
             onChange={handleChange}
-            placeholder="e.g. Female, Male, Non-binary, Prefer not to say"
+            placeholder={t("profile.gender_placeholder")}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-500"
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-navy-700 mb-2">
-            Education Background
+            {t("profile.education")}
           </label>
           <input
             type="text"
             name="education_background"
             value={formData.education_background}
             onChange={handleChange}
-            placeholder="e.g. Higher Secondary, Diploma, B.Tech"
+            placeholder={t("profile.education_placeholder")}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-500"
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-navy-700 mb-2">
-            Skills (comma-separated)
+            {t("profile.skills")}
           </label>
           <input
             type="text"
             name="skills"
             value={formData.skills}
             onChange={handleChange}
-            placeholder="e.g. Python, SQL, Web Development"
+            placeholder={t("profile.skills_placeholder")}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-500"
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-navy-700 mb-2">
-            Preferred Location
+            {t("profile.preferred_location")}
           </label>
           <input
             type="text"
             name="preferred_location"
             value={formData.preferred_location}
             onChange={handleChange}
-            placeholder="e.g. Jaipur, Delhi NCR, Remote"
+            placeholder={t("profile.location_placeholder")}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-500"
           />
         </div>
@@ -209,14 +211,14 @@ export const Profile = () => {
             disabled={loading}
             className="px-4 py-2 bg-navy-600 text-white rounded-md hover:bg-navy-700 disabled:opacity-50 font-medium transition-colors"
           >
-            {loading ? "Saving..." : "Update Profile"}
+            {loading ? t("button.saving") : t("button.save")}
           </button>
           <button
             type="button"
             onClick={logout}
             className="px-4 py-2 bg-gray-200 text-navy-800 rounded-md hover:bg-gray-300 text-sm font-medium transition-colors"
           >
-            Logout
+            {t("profile.logout")}
           </button>
         </div>
       </form>
@@ -224,26 +226,26 @@ export const Profile = () => {
       {/* Display current values */}
       {candidate && (
         <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm space-y-3">
-          <h2 className="text-lg font-semibold text-navy-800 border-b pb-2">Current Saved Profile</h2>
+          <h2 className="text-lg font-semibold text-navy-800 border-b pb-2">{t("profile.current_saved")}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <p className="text-navy-700">
-              <span className="font-medium text-navy-900">Date of Birth:</span>{" "}
-              {candidate.date_of_birth ? formatDate(candidate.date_of_birth) : "Not set"}
+              <span className="font-medium text-navy-900">{t("profile.date_of_birth")}:</span>{" "}
+              {candidate.date_of_birth ? formatDate(candidate.date_of_birth) : t("profile.not_set")}
             </p>
             <p className="text-navy-700">
-              <span className="font-medium text-navy-900">Gender:</span>{" "}
-              {candidate.gender || "Not set"}
+              <span className="font-medium text-navy-900">{t("profile.gender")}:</span>{" "}
+              {candidate.gender || t("profile.not_set")}
             </p>
             <p className="text-navy-700">
-              <span className="font-medium text-navy-900">Education Background:</span>{" "}
-              {candidate.education_background || "Not set"}
+              <span className="font-medium text-navy-900">{t("profile.education")}:</span>{" "}
+              {candidate.education_background || t("profile.not_set")}
             </p>
             <p className="text-navy-700">
-              <span className="font-medium text-navy-900">Preferred Location:</span>{" "}
-              {candidate.preferred_location || "Not set"}
+              <span className="font-medium text-navy-900">{t("profile.preferred_location")}:</span>{" "}
+              {candidate.preferred_location || t("profile.not_set")}
             </p>
             <div className="md:col-span-2 text-navy-700">
-              <span className="font-medium text-navy-900">Skills:</span>{" "}
+              <span className="font-medium text-navy-900">{t("profile.skills")}:</span>{" "}
               {formatSkills(candidate.skills) ? (
                 <div className="mt-1 flex flex-wrap gap-2">
                   {formatSkills(candidate.skills)
@@ -260,7 +262,7 @@ export const Profile = () => {
                     ))}
                 </div>
               ) : (
-                "Not set"
+                t("profile.not_set")
               )}
             </div>
           </div>

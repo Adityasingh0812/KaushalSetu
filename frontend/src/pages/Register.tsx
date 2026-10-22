@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export const Register = () => {
   const [email, setEmail] = useState("");
@@ -12,6 +13,7 @@ export const Register = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const { register } = useAuth();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,19 +21,19 @@ export const Register = () => {
 
     // Client-side validation
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError(t("auth.passwords_mismatch"));
       return;
     }
     if (password.length < 8) {
-      setError("Password must be at least 8 characters");
+      setError(t("auth.password_min"));
       return;
     }
     if (!email.includes("@")) {
-      setError("Please enter a valid email address");
+      setError(t("auth.invalid_email"));
       return;
     }
     if (fullName.trim().length < 2) {
-      setError("Full name must be at least 2 characters");
+      setError(t("auth.name_min"));
       return;
     }
 
@@ -44,13 +46,13 @@ export const Register = () => {
       // Handle API error messages
       const msg = err?.message || "";
       if (msg.includes("400") || msg.includes("Email already registered")) {
-        setError("This email is already registered. Please use a different email or sign in.");
+        setError(t("auth.email_exists"));
       } else if (msg.includes("422") || msg.includes("validation")) {
-        setError("Please check your input and try again.");
+        setError(t("auth.validation_error"));
       } else if (msg.includes("500")) {
-        setError("Server error. Please try again later.");
+        setError(t("auth.server_error"));
       } else {
-        setError(msg || "Registration failed. Please try again.");
+        setError(msg || t("auth.server_error"));
       }
     } finally {
       setLoading(false);
@@ -62,16 +64,16 @@ export const Register = () => {
       <div className="w-full max-w-md space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-bold text-navy-800">
-            Create your KaushalSetu account
+            {t("auth.create_account")}
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Register as a trainee or employer to access the system
+            {t("auth.register_as")}
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div>
             <label htmlFor="fullName" className="sr-only">
-              Full Name
+              {t("auth.full_name")}
             </label>
             <div className="relative rounded-md shadow-sm">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -88,14 +90,14 @@ export const Register = () => {
                 autoFocus
                 required
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md bg-white placeholder-gray-400 focus:outline-none focus:ring-navy-500 focus:border-navy-500 sm:text-sm"
-                placeholder="Full Name"
+                placeholder={t("auth.full_name")}
               />
             </div>
           </div>
 
           <div>
             <label htmlFor="email" className="sr-only">
-              Email
+              {t("auth.email")}
             </label>
             <div className="relative rounded-md shadow-sm">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -111,14 +113,14 @@ export const Register = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md bg-white placeholder-gray-400 focus:outline-none focus:ring-navy-500 focus:border-navy-500 sm:text-sm"
-                placeholder="Email address"
+                placeholder={t("auth.email")}
               />
             </div>
           </div>
 
           <div>
             <label htmlFor="phone" className="sr-only">
-              Phone (optional)
+              {t("auth.phone")}
             </label>
             <div className="relative rounded-md shadow-sm">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -133,14 +135,14 @@ export const Register = () => {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md bg-white placeholder-gray-400 focus:outline-none focus:ring-navy-500 focus:border-navy-500 sm:text-sm"
-                placeholder="Phone number (optional)"
+                placeholder={t("auth.phone")}
               />
             </div>
           </div>
 
           <div>
             <label htmlFor="password" className="sr-only">
-              Password
+              {t("auth.password")}
             </label>
             <div className="relative rounded-md shadow-sm">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -158,14 +160,14 @@ export const Register = () => {
                 required
                 minLength={8}
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md bg-white placeholder-gray-400 focus:outline-none focus:ring-navy-500 focus:border-navy-500 sm:text-sm"
-                placeholder="Password (min 8 characters)"
+                placeholder={t("auth.password")}
               />
             </div>
           </div>
 
           <div>
             <label htmlFor="confirmPassword" className="sr-only">
-              Confirm Password
+              {t("auth.confirm_password")}
             </label>
             <div className="relative rounded-md shadow-sm">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -182,7 +184,7 @@ export const Register = () => {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md bg-white placeholder-gray-400 focus:outline-none focus:ring-navy-500 focus:border-navy-500 sm:text-sm"
-                placeholder="Confirm Password"
+                placeholder={t("auth.confirm_password")}
               />
             </div>
           </div>
@@ -199,23 +201,23 @@ export const Register = () => {
               disabled={loading}
               className="group w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md shadow-sm bg-navy-600 text-white hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-navy-500"
             >
-              {loading ? "Creating account..." : "Create Account"}
+              {loading ? t("auth.creating_account") : t("button.register")}
             </button>
           </div>
         </form>
 
         <p className="mt-6 text-center text-sm text-gray-500">
-          Already have an account?{' '}
+          {t("auth.already_have_account")}
           <Link
             to="/login"
             className="font-medium text-navy-600 hover:text-navy-800"
           >
-            Sign in
+            {t("button.login")}
           </Link>
         </p>
 
         <p className="mt-4 text-center text-xs text-gray-400">
-          By creating an account, you agree to our Terms of Service and Privacy Policy.
+          {t("auth.terms")}
         </p>
       </div>
     </div>
