@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { authApi } from "../services/authRequest";
+import { getAccessToken, getRefreshToken, clearTokens } from "../auth/tokenStorage";
 
 // Define the shape of our auth context
 interface AuthContextType {
@@ -31,11 +32,40 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<AuthContextType["user"]>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // On app load, we could attempt to restore token from storage, but we decided not to persist tokens.
-  // So we start with no user and loading false after checking if there is a token? Actually we have no persistence.
-  // We'll set loading to false immediately.
+  // On app load, attempt to restore session from stored tokens
   useEffect(() => {
-    setLoading(false);
+    const restoreSession = async () => {
+      // Check if we have tokens stored (either access or refresh token)
+      const hasTokens = getAccessToken() !== null || getRefreshToken() !== null;
+
+      if (!hasTokens) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const userData = await authApi.me();
+        setUser(userData);
+      } catch (err) {
+        // Only clear tokens on authentication failures (invalid/expired credentials)
+        // Network errors or server errors should NOT clear valid tokens
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        const isAuthFailure =
+          errorMessage.includes("401") || errorMessage.includes("403") || errorMessage.includes("Invalid refresh token") || errorMessage.includes("expired");
+
+        if (isAuthFailure) {
+          clearTokens();
+          setUser(null);
+        } else {
+          // Network error or server error - keep tokens, user can retry
+          setUser(null);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    restoreSession();
   }, []);
 
   const login = async (email: string, password: string) => {

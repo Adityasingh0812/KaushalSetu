@@ -48,13 +48,20 @@ export const authenticatedFetch = async <T>(
         setTokens(newTokens.access_token, newTokens.refresh_token);
         // Retry original request with new token
         response = await performFetch(true);
-      } else {
-        // Refresh failed, clear tokens
+      } else if (refreshResponse.status === 401 || refreshResponse.status === 403) {
+        // Refresh token invalid/expired - clear auth state
         clearTokens();
-        throw new Error("Refresh token failed");
+        throw new Error("Refresh token invalid or expired");
+      } else {
+        // Other refresh errors (5xx, network) - don't clear tokens, let caller handle
+        throw new Error(`Token refresh failed: ${refreshResponse.status}`);
       }
     } catch (err) {
-      clearTokens();
+      // Network error during refresh - don't clear tokens, let caller handle
+      if (err instanceof TypeError) {
+        throw new Error("Network error during token refresh");
+      }
+      // Other errors (already handled above for 401/403)
       throw err;
     }
   }
